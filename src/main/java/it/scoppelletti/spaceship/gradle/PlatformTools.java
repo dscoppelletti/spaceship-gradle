@@ -295,7 +295,6 @@ public abstract class PlatformTools {
      *
      * @param pom POM.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private void configurePom(@Nonnull MavenPom pom) {
         pom.getDescription().set(mySpaceshipExt.getDescription());
         pom.setPackaging(myPackaging);
@@ -325,7 +324,6 @@ public abstract class PlatformTools {
      * @param pom       POM.
      * @param developer Developer.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private void configureDeveloper(@Nonnull MavenPomDeveloper pom,
             Developer developer) {
         pom.getName().set(developer.getName());
@@ -339,7 +337,6 @@ public abstract class PlatformTools {
      * @param pom     POM.
      * @param license License.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private void configureLicense(@Nonnull MavenPomLicense pom,
             @Nonnull License license) {
         pom.getName().set(license.getName());
@@ -351,7 +348,6 @@ public abstract class PlatformTools {
      *
      * @param pom POM.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private void configureScm(@Nonnull MavenPomScm pom) {
         String scm;
 

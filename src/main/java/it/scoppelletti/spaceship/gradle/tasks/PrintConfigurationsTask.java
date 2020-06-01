@@ -50,7 +50,6 @@ public class PrintConfigurationsTask extends DefaultTask {
             System.out.printf("Configuration(%1$s) {%n", config.getName());
             for (ExternalDependency dep : config.getAllDependencies()
                     .withType(ExternalDependency.class)) {
-                //noinspection UnstableApiUsage
                 System.out.printf("\tDependency(groupId=%1$s,artifactId=%2$s," +
                                 "version=%3$s,reason=%4$s," +
                                 "targetConfiguration=%5$s) {%n",
@@ -58,7 +57,6 @@ public class PrintConfigurationsTask extends DefaultTask {
                         dep.getVersion(), dep.getReason(),
                         dep.getTargetConfiguration());
 
-                //noinspection UnstableApiUsage
                 System.out.printf("\t\tVersionConstraint(branch=%1$s," +
                                 "preferred=%2$s,required=%3$s,strict=%4$s)%n",
                     dep.getVersionConstraint().getBranch(),
