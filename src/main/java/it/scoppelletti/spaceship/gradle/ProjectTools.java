@@ -16,6 +16,7 @@
 
 package it.scoppelletti.spaceship.gradle;
 
+import java.net.URI;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,45 +75,45 @@ public final class ProjectTools {
      *         will not be applied and the method returns {@code null}.
      */
     @Nullable
-    public String applyMavenPublish() {
-        String devRepoUrl;
+    public URI applyMavenPublish() {
+        String url;
 
-        if (myProject.hasProperty(SpaceshipPlugin.PROP_DEVREPOURL)) {
-            devRepoUrl = (String) myProject.property(
-                    SpaceshipPlugin.PROP_DEVREPOURL);
-            myLogger.info("Property {}={}", SpaceshipPlugin.PROP_DEVREPOURL,
-                    devRepoUrl);
-
-            if (myProject.getPlugins().hasPlugin(MavenPublishPlugin.class)) {
-                myLogger.info("Plugin {} already applied.",
-                        MavenPublishPlugin.class);
-            } else {
-                myLogger.info("Applying plugin {}.", MavenPublishPlugin.class);
-                myProject.getPluginManager().apply(MavenPublishPlugin.class);
-            }
-        } else {
-            devRepoUrl = null;
+        if (!myProject.hasProperty(SpaceshipPlugin.PROP_DEVREPOURL)) {
             myLogger.info("Property {} not set.",
                     SpaceshipPlugin.PROP_DEVREPOURL);
+            return null;
         }
 
-        return devRepoUrl;
+        url = (String) myProject.property(
+                SpaceshipPlugin.PROP_DEVREPOURL);
+        myLogger.info("Property {}={}", SpaceshipPlugin.PROP_DEVREPOURL, url);
+        if (StringUtils.isBlank(url)) {
+            return null;
+        }
+
+        if (myProject.getPlugins().hasPlugin(MavenPublishPlugin.class)) {
+            myLogger.info("Plugin {} already applied.",
+                    MavenPublishPlugin.class);
+        } else {
+            myLogger.info("Applying plugin {}.", MavenPublishPlugin.class);
+            myProject.getPluginManager().apply(MavenPublishPlugin.class);
+        }
+
+        return myProject.uri(url);
     }
 
     /**
      * Defines the Maven repository where to publish the artifacts.
      *
-     * @param devRepoUrl URL of the development Maven repository.
-     * @param taskName   Name of the build task on which all publishing tasks
-     *                   will depend.
+     * @param url      URL of the development Maven repository.
+     * @param taskName Name of the build task on which all publishing tasks will
+     *                 depend.
      */
-    public void definePublishingRepo(@Nonnull String devRepoUrl,
+    public void definePublishingRepo(@Nonnull URI url,
             @Nonnull String taskName) {
         PublishingExtension publishExt;
 
-        if (StringUtils.isBlank(devRepoUrl)) {
-            throw new NullPointerException("Argument devRepoUrl is null.");
-        }
+        Objects.requireNonNull(url, "Argument Url is null.");
         if (StringUtils.isBlank(taskName)) {
             throw new NullPointerException("Argument taskName is null.");
         }
@@ -124,7 +125,7 @@ public final class ProjectTools {
 
         publishExt.getRepositories().maven(repo -> {
             repo.setName(SpaceshipPlugin.REPO_DEV);
-            repo.setUrl(devRepoUrl);
+            repo.setUrl(url);
         });
 
         myProject.getTasks().all(task -> {
@@ -132,5 +133,61 @@ public final class ProjectTools {
                 task.dependsOn(taskName);
             }
         });
+    }
+
+    /**
+     * Gets the Credit database file.
+     *
+     * @return File. If the property
+     *         {@code it.scoppelletti.tools.credits.databaseUrl} is not set,
+     *         returns {@code null}.
+     */
+    @Nullable
+    public URI getCreditDatabaseUrl() {
+        String url;
+
+        if (!myProject.hasProperty(SpaceshipPlugin.PROP_CREDITDATABASEURL)) {
+            myLogger.info("Property {} not set.",
+                    SpaceshipPlugin.PROP_CREDITDATABASEURL);
+            return null;
+        }
+
+        url = (String) myProject.property(
+                SpaceshipPlugin.PROP_CREDITDATABASEURL);
+        myLogger.info("Property {}={}", SpaceshipPlugin.PROP_CREDITDATABASEURL,
+                url);
+        if (StringUtils.isBlank(url)) {
+            return null;
+        }
+
+        return myProject.uri(url);
+    }
+
+    /**
+     * Gets the Credit database file.
+     *
+     * @return File. If the property
+     *         {@code it.scoppelletti.tools.credits.databaseUrl} is not set,
+     *         returns {@code null}.
+     */
+    @Nullable
+    public String getCreditTemplateName() {
+        String name;
+
+        if (!myProject.hasProperty(SpaceshipPlugin.PROP_CREDITTEMPLATENAME)) {
+            myLogger.info("Property {} not set.",
+                    SpaceshipPlugin.PROP_CREDITTEMPLATENAME);
+            return null;
+        }
+
+        name = (String) myProject.property(
+                SpaceshipPlugin.PROP_CREDITTEMPLATENAME);
+        myLogger.info("Property {}={}", SpaceshipPlugin.PROP_CREDITTEMPLATENAME,
+                name);
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
+
+        return name;
     }
 }

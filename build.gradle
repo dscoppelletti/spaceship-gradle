@@ -68,6 +68,7 @@ dependencies {
     //noinspection DifferentStdlibGradleVersion
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
 
+    api 'org.thymeleaf:thymeleaf'
     implementation 'org.apache.commons:commons-lang3'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

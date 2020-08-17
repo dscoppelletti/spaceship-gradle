@@ -24,8 +24,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import it.scoppelletti.spaceship.gradle.model.Developer;
-import it.scoppelletti.spaceship.gradle.model.License;
+import it.scoppelletti.spaceship.gradle.model.DeveloperModel;
+import it.scoppelletti.spaceship.gradle.model.LicenseModel;
 import it.scoppelletti.spaceship.gradle.model.SpaceshipExtension;
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.Project;
@@ -47,12 +47,12 @@ import org.gradle.tooling.BuildException;
 import org.jetbrains.dokka.gradle.DokkaTask;
 
 /**
- * Tools for implementing plug-ins.
+ * Library tools.
  *
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class PlatformTools {
+public abstract class LibraryTools {
     private static final String CACHE_DEFAULT = "default";
     private static final String CLASSIFIER_JAVADOC = "javadoc";
     private static final String CLASSIFIER_SOURCES = "sources";
@@ -61,7 +61,7 @@ public abstract class PlatformTools {
     private static final String PROTOCOL_SCM = "scm:git:";
     private final Project myProject;
     private final String myPackaging;
-    private final TaskNames myTaskNames;
+    private final LibraryTaskNames myTaskNames;
     private final BasePluginConvention myConvention;
     private final SpaceshipExtension mySpaceshipExt;
     private final PublishingExtension myPublishExt;
@@ -70,11 +70,12 @@ public abstract class PlatformTools {
      * Constructor.
      *
      * @param project   Project.
+     * @param packaging Type of packaging.
      * @param taskNames Provides name and description of the tasks.
      */
-    protected PlatformTools(@Nonnull Project project,
+    protected LibraryTools(@Nonnull Project project,
             @Nonnull String packaging,
-            @Nonnull TaskNames taskNames) {
+            @Nonnull LibraryTaskNames taskNames) {
         myProject = Objects.requireNonNull(project,
                 "Argument project is null.");
 
@@ -176,7 +177,7 @@ public abstract class PlatformTools {
         jarTask.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP);
 
         //noinspection deprecation
-        jarTask.setClassifier(PlatformTools.CLASSIFIER_SOURCES);
+        jarTask.setClassifier(LibraryTools.CLASSIFIER_SOURCES);
 
         jarTask.from(source);
 
@@ -208,9 +209,9 @@ public abstract class PlatformTools {
         kdocTask.setGroup(JavaBasePlugin.DOCUMENTATION_GROUP);
 
         // http://github.com/Kotlin/dokka, README.md
-        kdocTask.setOutputFormat(PlatformTools.FORMAT_HTML);
+        kdocTask.setOutputFormat(LibraryTools.FORMAT_HTML);
         kdocTask.setOutputDirectory(outDir.toString());
-        kdocTask.setCacheRoot(PlatformTools.CACHE_DEFAULT);
+        kdocTask.setCacheRoot(LibraryTools.CACHE_DEFAULT);
 
         kdocTask.configuration(config -> {
             config.setModuleName(myConvention.getArchivesBaseName());
@@ -219,8 +220,8 @@ public abstract class PlatformTools {
             config.setReportUndocumented(false);
             config.setSkipEmptyPackages(true);
             config.setTargets(Collections.singletonList(
-                    PlatformTools.PLATFORM_JVM));
-            config.setPlatform(PlatformTools.PLATFORM_JVM);
+                    LibraryTools.PLATFORM_JVM));
+            config.setPlatform(LibraryTools.PLATFORM_JVM);
 //            config.setClasspath(...);
 //            config.setSourceRoots(...);
             config.setIncludes(
@@ -252,7 +253,7 @@ public abstract class PlatformTools {
         jarTask.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP);
 
         //noinspection deprecation
-        jarTask.setClassifier(PlatformTools.CLASSIFIER_JAVADOC);
+        jarTask.setClassifier(LibraryTools.CLASSIFIER_JAVADOC);
 
         jarTask.from(kdocTask.getOutputDirectoryAsFile());
         jarTask.dependsOn(kdocTask);
@@ -325,7 +326,7 @@ public abstract class PlatformTools {
      * @param developer Developer.
      */
     private void configureDeveloper(@Nonnull MavenPomDeveloper pom,
-            Developer developer) {
+            DeveloperModel developer) {
         pom.getName().set(developer.getName());
         pom.getEmail().set(developer.getEmail());
         pom.getUrl().set(developer.getUrl());
@@ -338,7 +339,7 @@ public abstract class PlatformTools {
      * @param license License.
      */
     private void configureLicense(@Nonnull MavenPomLicense pom,
-            @Nonnull License license) {
+            @Nonnull LicenseModel license) {
         pom.getName().set(license.getName());
         pom.getUrl().set(license.getUrl());
     }
@@ -351,7 +352,7 @@ public abstract class PlatformTools {
     private void configureScm(@Nonnull MavenPomScm pom) {
         String scm;
 
-        scm = PlatformTools.PROTOCOL_SCM.concat(mySpaceshipExt.getScmUrl());
+        scm = LibraryTools.PROTOCOL_SCM.concat(mySpaceshipExt.getScmUrl());
         pom.getConnection().set(scm);
         pom.getDeveloperConnection().set(scm);
         pom.getUrl().set(mySpaceshipExt.getScmUrl());

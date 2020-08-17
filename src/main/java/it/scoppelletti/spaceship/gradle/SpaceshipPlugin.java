@@ -36,6 +36,18 @@ public class SpaceshipPlugin implements Plugin<Project> {
             "it.scoppelletti.tools.devRepoUrl";
 
     /**
+     * Property containing the URL of the Credit database file.
+     */
+    public static final String PROP_CREDITDATABASEURL =
+            "it.scoppelletti.tools.credits.databaseUrl";
+
+    /**
+     * Property containing the URL of the Credit template name.
+     */
+    public static final String PROP_CREDITTEMPLATENAME =
+            "it.scoppelletti.tools.credits.templateName";
+
+    /**
      * Name of the development Maven repository.
      */
     public static final String REPO_DEV = "dev";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Dario Scoppelletti, <http://www.scoppelletti.it/>.
+ * Copyright (C) 2019 Dario Scoppelletti, <http://www.scoppelletti.it/>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,31 @@
  * limitations under the License.
  */
 
-/**
- * Models.
- *
- * @version 1.0.0
- */
 package it.scoppelletti.spaceship.gradle.model;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * License.
+ */
+@ToString
+@NoArgsConstructor
+public class LicenseModel {
+
+    /**
+     * Name.
+     */
+    @Getter
+    @Setter
+    private String name = "The Apache License, Version 2.0";
+
+    /**
+     * URL.
+     */
+    @Getter
+    @Setter
+    private String url = "http://www.apache.org/licenses/LICENSE-2.0.txt";
+}

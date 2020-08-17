@@ -22,23 +22,32 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * License.
+ * Developer.
+ *
+ * @since 1.0.0
  */
 @ToString
 @NoArgsConstructor
-public class License {
+public class DeveloperModel {
 
     /**
      * Name.
      */
     @Getter
     @Setter
-    private String myName = "The Apache License, Version 2.0";
+    private String name = "Dario Scoppelletti";
 
     /**
-     * URL.
+     * Email.
      */
     @Getter
     @Setter
-    private String myUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt";
+    private String email = "dario@scoppelletti.it";
+
+    /**
+     * Website.
+     */
+    @Getter
+    @Setter
+    private String url = "http://www.scoppelletti.it";
 }

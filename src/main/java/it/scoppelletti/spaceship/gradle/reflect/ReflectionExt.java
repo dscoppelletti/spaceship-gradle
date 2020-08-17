@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Dario Scoppelletti, <http://www.scoppelletti.it/>.
+ * Copyright (C) 2008-2013 Dario Scoppelletti, <http://www.scoppelletti.it/>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,30 @@
  * limitations under the License.
  */
 
-package it.scoppelletti.spaceship.gradle.model;
+package it.scoppelletti.spaceship.gradle.reflect;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.InputStream;
 
 /**
- * Developer.
+ * Reflection extensions.
  *
  * @since 1.0.0
  */
-@ToString
-@NoArgsConstructor
-public class Developer {
+public final class ReflectionExt {
+
+    private ReflectionExt() {
+    }
 
     /**
-     * Name.
+     * Open the input stream for reading a resource.
+     *
+     * @param  name Resource name.
+     * @return      Stream. If the resource is not found, returns {@code null}.
      */
-    @Getter
-    @Setter
-    private String myName = "Dario Scoppelletti";
+    public static InputStream getResourceAsStream(String name) {
+        StreamFinder finder;
 
-    /**
-     * Email.
-     */
-    @Getter
-    @Setter
-    private String myEmail = "dario@scoppelletti.it";
-
-    /**
-     * Website.
-     */
-    @Getter
-    @Setter
-    private String myUrl = "http://www.scoppelletti.it";
+        finder = new StreamFinder(name);
+        return finder.findResource();
+    }
 }

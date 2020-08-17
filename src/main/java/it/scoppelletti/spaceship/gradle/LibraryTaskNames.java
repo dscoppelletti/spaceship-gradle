@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
  *
  * @since 1.0.0
  */
-public interface TaskNames {
+public interface LibraryTaskNames {
 
     /**
      * Gets the name of the task for generating the {@code META-INF} files.
