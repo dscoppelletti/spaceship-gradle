@@ -309,6 +309,7 @@ public abstract class LibraryTools {
         pom.developers(developers -> developers.developer(
                 dev -> configureDeveloper(dev, mySpaceshipExt.getDeveloper())));
 
+        //noinspection ConstantConditions
         if (mySpaceshipExt.getLicense() != null) {
             pom.licenses(spec -> spec.license(lic -> configureLicense(lic,
                     mySpaceshipExt.getLicense())));
@@ -350,11 +351,14 @@ public abstract class LibraryTools {
      * @param pom POM.
      */
     private void configureScm(@Nonnull MavenPomScm pom) {
-        String scm;
+        String scm, scmUrl;
 
-        scm = LibraryTools.PROTOCOL_SCM.concat(mySpaceshipExt.getScmUrl());
-        pom.getConnection().set(scm);
-        pom.getDeveloperConnection().set(scm);
-        pom.getUrl().set(mySpaceshipExt.getScmUrl());
+        scmUrl = mySpaceshipExt.getScmUrl();
+        if (StringUtils.isNotBlank(scmUrl)) {
+            scm = LibraryTools.PROTOCOL_SCM.concat(scmUrl);
+            pom.getConnection().set(scm);
+            pom.getDeveloperConnection().set(scm);
+            pom.getUrl().set(scmUrl);
+        }
     }
 }
