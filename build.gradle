@@ -1,11 +1,10 @@
 
 buildscript {
     ext.BOM = 'it.scoppelletti.spaceship:spaceship-bom:1.0.0'
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.5.21'
 
     repositories {
         mavenCentral()
-        jcenter()
 
         if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
             maven {
@@ -46,7 +45,6 @@ gradlePlugin {
 
 repositories {
     mavenCentral()
-    jcenter()
 
     if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
         maven {
