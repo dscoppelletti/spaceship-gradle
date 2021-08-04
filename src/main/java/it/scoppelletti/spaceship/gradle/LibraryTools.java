@@ -180,9 +180,8 @@ public abstract class LibraryTools {
         jarTask.setClassifier(LibraryTools.CLASSIFIER_SOURCES);
 
         jarTask.from(source);
-
-        //noinspection UnstableApiUsage
         jarTask.metaInf(spec -> spec.from(metainfTask.getDestinationDir()));
+        jarTask.dependsOn(myTaskNames.getGenerateMetainfName());
 
         return jarTask;
     }
