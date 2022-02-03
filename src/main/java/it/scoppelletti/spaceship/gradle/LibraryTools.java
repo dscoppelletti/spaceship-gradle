@@ -28,11 +28,12 @@ import it.scoppelletti.spaceship.gradle.model.DeveloperModel;
 import it.scoppelletti.spaceship.gradle.model.LicenseModel;
 import it.scoppelletti.spaceship.gradle.model.SpaceshipExtension;
 import org.apache.commons.lang3.StringUtils;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.BasePlugin;
-import org.gradle.api.plugins.BasePluginConvention;
+import org.gradle.api.plugins.BasePluginExtension;
 import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPom;
@@ -62,7 +63,7 @@ public abstract class LibraryTools {
     private final Project myProject;
     private final String myPackaging;
     private final LibraryTaskNames myTaskNames;
-    private final BasePluginConvention myConvention;
+    private final BasePluginExtension myConvention;
     private final SpaceshipExtension mySpaceshipExt;
     private final PublishingExtension myPublishExt;
 
@@ -87,8 +88,8 @@ public abstract class LibraryTools {
         myTaskNames = Objects.requireNonNull(taskNames,
                 "Argument taskNames is null.");
 
-        myConvention = myProject.getConvention().getPlugin(
-                BasePluginConvention.class);
+        myConvention = myProject.getExtensions().getByType(
+                BasePluginExtension.class);
         mySpaceshipExt = Objects.requireNonNull(
                 myProject.getExtensions().findByType(SpaceshipExtension.class),
                 () -> String.format("Extension %1$s not found.",
@@ -106,6 +107,7 @@ public abstract class LibraryTools {
      * @return         The new object.
      */
     @Nonnull
+    @SuppressWarnings("Convert2Lambda")
     protected final Copy doGenerateMetainf(@Nonnull Path intoDir) {
         Path fromDir;
         Copy metainfTask;
@@ -123,7 +125,17 @@ public abstract class LibraryTools {
                 .include("LICENSE")
                 .rename("LICENSE", "LICENSE.txt");
 
-        metainfTask.doLast(task -> writeNotice(intoDir.resolve("NOTICE.txt")));
+        // http://docs.gradle.org/7.2/userguide/validation_problems.html
+        //  #implementation_unknown
+        // Cannot replace Action by lambda
+        metainfTask.doLast(new Action<Task>() {
+
+            @Override
+            public void execute(@Nonnull Task task) {
+                writeNotice(intoDir.resolve("NOTICE.txt"));
+            }
+        });
+
         return metainfTask;
     }
 
@@ -213,7 +225,7 @@ public abstract class LibraryTools {
         kdocTask.setCacheRoot(LibraryTools.CACHE_DEFAULT);
 
         kdocTask.configuration(config -> {
-            config.setModuleName(myConvention.getArchivesBaseName());
+            config.setModuleName(myConvention.getArchivesName().get());
             config.setIncludeNonPublic(false);
             config.setSkipDeprecated(true);
             config.setReportUndocumented(false);
@@ -267,7 +279,7 @@ public abstract class LibraryTools {
     protected final MavenPublication doPublish() {
         Task kdocTask;
         MavenPublication publ;
-        BasePluginConvention convention;
+        BasePluginExtension convention;
 
         publ = myPublishExt.getPublications().create(
                 myTaskNames.getPublishName(), MavenPublication.class);
@@ -284,7 +296,7 @@ public abstract class LibraryTools {
             publ.artifact(kdocTask);
         }
 
-        publ.setArtifactId(myConvention.getArchivesBaseName());
+        publ.setArtifactId(myConvention.getArchivesName().get());
         publ.pom(this::configurePom);
 
         return publ;
