@@ -90,4 +90,24 @@ public final class XmlExt {
                 .append(ex.getColumnNumber())
                 .append(']').toString();
     }
+
+    /**
+     * Converts an XML string {@code boolean} to the corresponding Java value.
+     *
+     * @param  s Strings.
+     * @return   Value. If the string {@code s} is {@code null}, returns
+     *           {@code false}.
+     */
+    public static boolean parseBoolean(String s) {
+        if (s == null) {
+            return false;
+        }
+
+        s = s.trim().toLowerCase();
+        if (s.equals("true") || s.equals("1")) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -164,10 +164,10 @@ public final class ProjectTools {
     }
 
     /**
-     * Gets the Credit database file.
+     * Gets the Credit template file.
      *
      * @return File. If the property
-     *         {@code it.scoppelletti.tools.credits.databaseUrl} is not set,
+     *         {@code it.scoppelletti.tools.credits.templateName} is not set,
      *         returns {@code null}.
      */
     @Nullable
