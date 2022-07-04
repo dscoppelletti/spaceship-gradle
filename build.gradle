@@ -98,43 +98,52 @@ test {
     useJUnitPlatform()
 }
 
-if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
-    publishing {
-        publications {
-            // publishLibraryPublicationToDevRepository
-            library(MavenPublication) {
-                from components.java
+publishing {
+    publications {
+        // publishLibraryPublicationToDevRepository
+        library(MavenPublication) {
+            from components.java
 
-                artifactId = archivesBaseName
+            artifactId = archivesBaseName
 
-                pom {
-                    name = rootProject.name
-                    description = project.description
-                    url = 'http://github.com/dscoppelletti/spaceship-gradle'
-                    inceptionYear = '2019-2022'
-                    developers {
-                        developer {
-                            name = 'Dario Scoppelletti'
-                            email = 'dario@scoppelletti.it'
-                            url = 'http://www.scoppelletti.it'
-                        }
+            pom {
+                name = rootProject.name
+                description = project.description
+                url = 'http://github.com/dscoppelletti/spaceship-gradle'
+                inceptionYear = '2019-2022'
+                developers {
+                    developer {
+                        name = 'Dario Scoppelletti'
+                        email = 'dario@scoppelletti.it'
+                        url = 'http://www.scoppelletti.it'
                     }
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
+                }
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
-                    scm {
-                        connection = 'scm:git:git@github.com:dscoppelletti/spaceship-gradle.git'
-                        developerConnection = 'scm:git:git@github.com:dscoppelletti/spaceship-gradle.git'
-                        url = 'git@github.com:dscoppelletti/spaceship-gradle.git'
-                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:dscoppelletti/spaceship-gradle.git'
+                    developerConnection = 'scm:git:git@github.com:dscoppelletti/spaceship-gradle.git'
+                    url = 'git@github.com:dscoppelletti/spaceship-gradle.git'
                 }
             }
         }
+    }
 
-        repositories {
+    repositories {
+        maven {
+            name = 'github'
+            url = 'https://maven.pkg.github.com/dscoppelletti/spaceship'
+            credentials {
+                username = 'dscoppelletti'
+                password = project.property('it.scoppelletti.tools.github.pat')
+            }
+        }
+
+        if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
             maven {
                 name = 'dev'
                 url = project.property('it.scoppelletti.tools.devRepoUrl')
