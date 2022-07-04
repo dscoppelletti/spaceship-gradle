@@ -1,0 +1,144 @@
+buildscript {
+    ext.kotlin_version = '1.6.21'
+    ext.KOTLIN_BOM = "org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"
+    ext.SPACESHIP_BOM = 'it.scoppelletti.spaceship:spaceship-bom:1.0.0'
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+
+        if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
+            maven {
+                url project.property('it.scoppelletti.tools.devRepoUrl')
+            }
+        }
+    }
+    dependencies {
+        classpath platform(KOTLIN_BOM)
+        classpath platform(SPACESHIP_BOM)
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'com.google.devtools.ksp' version '1.6.21-1.0.6'
+}
+
+group = 'it.scoppelletti.spaceship'
+version = '1.0.0'
+description 'Spaceship Gradle Plugins'
+archivesBaseName = 'spaceship-gradle'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+gradlePlugin {
+    plugins {
+        spaceshipJavaLibrary {
+            id = 'it.scoppelletti.spaceship.java-library'
+            implementationClass = 'it.scoppelletti.spaceship.gradle.java.LibraryPlugin'
+        }
+    }
+}
+
+kotlin {
+    explicitApi = 'strict'
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
+        maven {
+            url project.property('it.scoppelletti.tools.devRepoUrl')
+        }
+    }
+}
+
+configurations {
+    bom
+    api.extendsFrom(bom)
+    ksp.extendsFrom(bom)
+    implementation.extendsFrom(bom)
+    testImplementation.extendsFrom(bom)
+}
+
+dependencies {
+    bom platform(KOTLIN_BOM)
+    bom platform(SPACESHIP_BOM)
+    api gradleApi()
+    api 'org.freemarker:freemarker'
+    api 'org.jetbrains.dokka:dokka-gradle-plugin'
+    implementation 'io.github.microutils:kotlin-logging'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'com.squareup.moshi:moshi'
+    ksp 'com.squareup.moshi:moshi-kotlin-codegen'
+    testImplementation gradleTestKit()
+    testImplementation 'io.kotest:kotest-assertions-core'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
+    publishing {
+        publications {
+            // publishLibraryPublicationToDevRepository
+            library(MavenPublication) {
+                from components.java
+
+                artifactId = archivesBaseName
+
+                pom {
+                    name = rootProject.name
+                    description = project.description
+                    url = 'http://github.com/dscoppelletti/spaceship-gradle'
+                    inceptionYear = '2019-2022'
+                    developers {
+                        developer {
+                            name = 'Dario Scoppelletti'
+                            email = 'dario@scoppelletti.it'
+                            url = 'http://www.scoppelletti.it'
+                        }
+                    }
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git@github.com:dscoppelletti/spaceship-gradle.git'
+                        developerConnection = 'scm:git:git@github.com:dscoppelletti/spaceship-gradle.git'
+                        url = 'git@github.com:dscoppelletti/spaceship-gradle.git'
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = 'dev'
+                url = project.property('it.scoppelletti.tools.devRepoUrl')
+            }
+        }
+    }
+}
