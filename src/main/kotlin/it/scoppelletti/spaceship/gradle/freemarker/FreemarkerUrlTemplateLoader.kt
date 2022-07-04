@@ -17,6 +17,7 @@
 package it.scoppelletti.spaceship.gradle.freemarker
 
 import freemarker.cache.URLTemplateLoader
+import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import mu.KotlinLogging
@@ -32,7 +33,16 @@ internal class FreemarkerUrlTemplateLoader: URLTemplateLoader() {
         }
 
         return try {
-            URL(name)
+            val url = URL(name)
+            val cn = url.openConnection()
+            cn.getInputStream().use {
+                // NOP
+            }
+
+            url
+        } catch (ex: IOException) {
+            logger.debug(ex) { "Connection to URL $name failed."}
+            null
         } catch (ex: MalformedURLException) {
             logger.debug(ex) { "Malformed URL $name." }
             null
