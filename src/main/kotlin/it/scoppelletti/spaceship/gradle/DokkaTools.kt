@@ -29,6 +29,7 @@ import it.scoppelletti.spaceship.gradle.tasks.DokkaLogoStylesTask
 import java.io.File
 import java.io.IOException
 import java.io.StringWriter
+import java.util.Objects
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -78,7 +79,7 @@ public class DokkaTools private constructor(
             DokkaTools::class.java.canonicalName)
 
         task.outputDirectory.set(workDir.resolve("output"))
-        task.moduleVersion.set(project.version.toString())
+        task.moduleVersion.set(Objects.toString(project.version))
         task.suppressObviousFunctions.set(false)
         task.suppressInheritedMembers.set(true)
         task.offlineMode.set(true)
@@ -129,6 +130,7 @@ public class DokkaTools private constructor(
         val templ = try {
             FreemarkerExt.config.getTemplate(COPYRIGHT_TEMPLATE)
         } catch (ex: IOException) {
+            project.logger.error("Fail to get $COPYRIGHT_TEMPLATE.", ex)
             throw BuildException("Fail to get $COPYRIGHT_TEMPLATE.", ex)
         }
 
@@ -144,9 +146,10 @@ public class DokkaTools private constructor(
         try {
             templ.process(model, writer)
         } catch (ex: IOException) {
-            project.logger.error(ex.message, ex)
+            project.logger.error("Fail to process $COPYRIGHT_TEMPLATE.", ex)
             throw BuildException("Fail to process $COPYRIGHT_TEMPLATE.", ex)
         } catch (ex: TemplateException) {
+            project.logger.error("Fail to process $COPYRIGHT_TEMPLATE.", ex)
             throw BuildException("Fail to process $COPYRIGHT_TEMPLATE.", ex)
         }
 

@@ -10,45 +10,6 @@ import org.junit.jupiter.api.io.TempDir
 class ExtensionTest {
 
     @Test
-    fun testDefault(@TempDir tmpDir: File) {
-        File(tmpDir, "build.gradle").run {
-            writeText("""
-                plugins {
-                    id "it.scoppelletti.spaceship.java-library"
-                }
-
-                tasks.register("testExtension") {
-                    doLast {
-                        println("${'$'}spaceship")
-                    }
-                }
-                """.trimIndent()
-            )
-
-            val result = GradleRunner.create()
-                .withProjectDir(tmpDir)
-                .withPluginClasspath()
-                .withArguments("testExtension")
-                .build()
-
-            result.output.run {
-                shouldContain(LibraryExtension::class.java.name)
-                shouldContain("url=<null>")
-                shouldContain("scmUrl=<null>")
-                shouldContain("inceptionYear=<null>")
-                shouldContain("logoUrl=http://www.scoppelletti.it/spaceship/images/spaceship-logo/ic_launcher-web.png")
-                shouldContain("developer=it.scoppelletti.spaceship.gradle.model.DeveloperModel")
-                shouldContain("name=Dario Scoppelletti")
-                shouldContain("email=dario@scoppelletti.it")
-                shouldContain("url=http://www.scoppelletti.it")
-                shouldContain("license=it.scoppelletti.spaceship.gradle.model.LicenseModel")
-                shouldContain("name=The Apache License, Version 2.0")
-                shouldContain("url=http://www.apache.org/licenses/LICENSE-2.0.txt")
-            }
-        }
-    }
-
-    @Test
     fun testExtension(@TempDir tmpDir: File) {
         File(tmpDir, "build.gradle").run {
             writeText("""
@@ -60,6 +21,7 @@ class ExtensionTest {
                     url = "http://github.com/dscoppelletti/spaceship"
                     scmUrl = "git@github.com:dscoppelletti/spaceship.git"
                     inceptionYear = "2020"
+                    logoUrl = "http://www.scoppelletti.it/spaceship/images/spaceship-logo/ic_launcher-web.png"
                     developer {
                         name = "Joe Doe"
                         email = "joe.doe@mail.com"

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RemoveRedundantQualifierName")
+
 package it.scoppelletti.spaceship.gradle.model
 
 import javax.inject.Inject
@@ -21,6 +23,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.Nested
 
 /**
@@ -36,7 +39,8 @@ import org.gradle.api.tasks.Nested
  * @property license       Develper.
  */
 public abstract class LibraryExtension @Inject constructor(
-    objects: ObjectFactory
+    objects: ObjectFactory,
+    providers: ProviderFactory
 ) {
 
     public abstract val url: Property<String>
@@ -45,7 +49,7 @@ public abstract class LibraryExtension @Inject constructor(
 
     public val logoUrl: Property<String> =
         objects.property(String::class.java).apply {
-            convention("http://www.scoppelletti.it/spaceship/images/spaceship-logo/ic_launcher-web.png")
+            convention(providers.gradleProperty(LibraryExtension.PROP_LOGOURL))
         }
 
     @get:Nested
@@ -80,5 +84,11 @@ public abstract class LibraryExtension @Inject constructor(
          * Name of this extension object.
          */
         public const val NAME: String = "spaceship"
+
+        /**
+         * Property containing the URL of the logo.
+         */
+        public const val PROP_LOGOURL: String =
+            "it.scoppelletti.spaceship.logoUrl"
     }
 }

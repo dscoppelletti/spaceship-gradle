@@ -23,6 +23,7 @@ import it.scoppelletti.spaceship.gradle.model.DeveloperModel
 import it.scoppelletti.spaceship.gradle.model.LicenseModel
 import it.scoppelletti.spaceship.gradle.model.LibraryExtension
 import java.io.File
+import java.util.Objects
 import org.gradle.api.Project
 import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.provider.Property
@@ -62,8 +63,8 @@ public class PublishTools private constructor(
         val publ = publishExt.publications.create(publName,
             MavenPublication::class.java)
 
-        publ.groupId = project.group.toString()
-        publ.version = project.version.toString()
+        publ.groupId = Objects.toString(project.group)
+        publ.version = Objects.toString(project.version)
 
         project.extensions.findByType(BasePluginExtension::class.java)?.let {
             publ.artifactId = it.archivesName.get()
@@ -164,23 +165,26 @@ public class PublishTools private constructor(
 
     /**
      * Creates the Maven repository where to publish the artifacts.
+     *
+     * If the property `it.scoppelletti.spaceship.repository.url` is not set,
+     * the Maven repository is not created.
      */
     public fun createPublishingRepo() {
         val url = try {
-            project.property(PublishTools.PROP_DEVREPOURL) as String?
+            project.property(PublishTools.PROP_REPOURL) as String?
         } catch (ex: MissingPropertyException) {
             project.logger.info(
-                "Property ${PublishTools.PROP_DEVREPOURL} not set.")
+                "Property ${PublishTools.PROP_REPOURL} not set.")
             return
         }
 
-        project.logger.info("Property ${PublishTools.PROP_DEVREPOURL}=$url")
+        project.logger.info("Property ${PublishTools.PROP_REPOURL}=$url")
         if (url.isNullOrBlank()) {
             return
         }
 
         publishExt.repositories.maven { repo ->
-            repo.name = PublishTools.REPO_DEV
+            repo.name = PublishTools.REPO_NAME
             repo.url = project.uri(url)
         }
     }
@@ -216,13 +220,13 @@ public class PublishTools private constructor(
         /**
          * Property containing the URL of the development Maven repository.
          */
-        public const val PROP_DEVREPOURL: String =
-            "it.scoppelletti.tools.devRepoUrl"
+        public const val PROP_REPOURL: String =
+            "it.scoppelletti.spaceship.repository.url"
 
         /**
          * Name of the development Maven repository.
          */
-        public const val REPO_DEV: String = "dev"
+        public const val REPO_NAME: String = "dev"
 
         /**
          * Creates a new instance.

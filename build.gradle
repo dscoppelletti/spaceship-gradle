@@ -6,12 +6,6 @@ buildscript {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-
-        if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
-            maven {
-                url project.property('it.scoppelletti.tools.devRepoUrl')
-            }
-        }
     }
     dependencies {
         classpath platform(KOTLIN_BOM)
@@ -63,9 +57,9 @@ compileTestKotlin {
 repositories {
     mavenCentral()
 
-    if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
+    if (project.hasProperty('it.scoppelletti.spaceship.repository.url')) {
         maven {
-            url project.property('it.scoppelletti.tools.devRepoUrl')
+            url project.property('it.scoppelletti.spaceship.repository.url')
         }
     }
 }
@@ -133,20 +127,11 @@ publishing {
         }
     }
 
-    repositories {
-        maven {
-            name = 'github'
-            url = 'https://maven.pkg.github.com/dscoppelletti/spaceship'
-            credentials {
-                username = 'dscoppelletti'
-                password = project.property('it.scoppelletti.tools.github.pat')
-            }
-        }
-
-        if (project.hasProperty('it.scoppelletti.tools.devRepoUrl')) {
+    if (project.hasProperty('it.scoppelletti.spaceship.repository.url')) {
+        repositories {
             maven {
                 name = 'dev'
-                url = project.property('it.scoppelletti.tools.devRepoUrl')
+                url = project.property('it.scoppelletti.spaceship.repository.url')
             }
         }
     }

@@ -55,6 +55,7 @@ public abstract class DokkaLogoStylesTask: DefaultTask() {
         val templ = try {
             FreemarkerExt.config.getTemplate(TEMPLATE_NAME)
         } catch (ex: IOException) {
+            logger.error("Fail to get $TEMPLATE_NAME.", ex)
             throw BuildException("Fail to get $TEMPLATE_NAME.", ex)
         }
 
@@ -64,8 +65,10 @@ public abstract class DokkaLogoStylesTask: DefaultTask() {
             try {
                 templ.process(model, writer)
             } catch (ex: IOException) {
+                logger.error("Fail to process $TEMPLATE_NAME.", ex)
                 throw BuildException("Fail to process $TEMPLATE_NAME.", ex)
             } catch (ex: TemplateException) {
+                logger.error("Fail to process $TEMPLATE_NAME.", ex)
                 throw BuildException("Fail to process $TEMPLATE_NAME.", ex)
             }
         }

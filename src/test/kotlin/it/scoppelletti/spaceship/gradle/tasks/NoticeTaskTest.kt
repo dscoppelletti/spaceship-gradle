@@ -11,37 +11,7 @@ import org.junit.jupiter.api.io.TempDir
 class NoticeTaskTest {
 
     @Test
-    fun testDefault(@TempDir tmpDir: File) {
-        val outFile = File(tmpDir, NoticeTask.NOTICE_NAME)
-
-        File(tmpDir, "build.gradle").run {
-            writeText("""
-                plugins {
-                    id "it.scoppelletti.spaceship.java-library"
-                }
-
-                tasks.create("testTask", ${NoticeTask::class.java.name}) {
-                    outputFile = file("${outFile.path}")
-                }
-                """.trimIndent()
-            )
-        }
-
-        val result = GradleRunner.create()
-            .withProjectDir(tmpDir)
-            .withPluginClasspath()
-            .withArguments("testTask")
-            .build()
-        result.task(":testTask")!!.outcome.shouldBe(TaskOutcome.SUCCESS)
-
-        outFile.readText().run {
-            shouldContain("Dario Scoppelletti")
-            shouldContain("http://www.scoppelletti.it")
-        }
-    }
-
-    @Test
-    fun testExtension(@TempDir tmpDir: File) {
+    fun testTask(@TempDir tmpDir: File) {
         val outFile = File(tmpDir, NoticeTask.NOTICE_NAME)
 
         File(tmpDir, "build.gradle").run {

@@ -11,38 +11,7 @@ import org.junit.jupiter.api.io.TempDir
 class DokkaCopyrightTest {
 
     @Test
-    fun testDefault(@TempDir tmpDir: File) {
-        File(tmpDir, "build.gradle").run {
-            writeText("""
-                plugins {
-                    id "it.scoppelletti.spaceship.java-library"
-                }
-
-                tasks.register("testCopyright") {
-                    doLast {
-                        def tools = ${DokkaTools::class.java.name}.create(project)
-                        println(tools.buildCopyright())
-                    }
-                }
-                """.trimIndent()
-            )
-        }
-
-        val result = GradleRunner.create()
-            .withProjectDir(tmpDir)
-            .withPluginClasspath()
-            .withArguments("testCopyright")
-            .build()
-        result.task(":testCopyright")!!.outcome.shouldBe(TaskOutcome.SUCCESS)
-
-        result.output.run {
-            shouldContain("http://www.scoppelletti.it")
-            shouldContain("Dario Scoppelletti")
-        }
-    }
-
-    @Test
-    fun testExtension(@TempDir tmpDir: File) {
+    fun testTask(@TempDir tmpDir: File) {
         File(tmpDir, "build.gradle").run {
             writeText("""
                 plugins {
@@ -60,7 +29,7 @@ class DokkaCopyrightTest {
                     }
                 }
                 
-                tasks.register("testCopyright") {
+                tasks.register("testTask") {
                     doLast {
                         def tools = ${DokkaTools::class.java.name}.create(project)
                         println(tools.buildCopyright())
@@ -73,9 +42,9 @@ class DokkaCopyrightTest {
         val result = GradleRunner.create()
             .withProjectDir(tmpDir)
             .withPluginClasspath()
-            .withArguments("testCopyright")
+            .withArguments("testTask")
             .build()
-        result.task(":testCopyright")!!.outcome.shouldBe(TaskOutcome.SUCCESS)
+        result.task(":testTask")!!.outcome.shouldBe(TaskOutcome.SUCCESS)
 
         result.output.run {
             shouldContain("2020")

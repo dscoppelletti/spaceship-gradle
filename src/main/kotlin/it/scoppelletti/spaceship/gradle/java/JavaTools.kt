@@ -95,6 +95,6 @@ internal class JavaTools private constructor(
          * @return         The new object.
          */
         @JvmStatic
-        fun create(project: Project): JavaTools = JavaTools(project)
+        fun create(project: Project) = JavaTools(project)
     }
 }

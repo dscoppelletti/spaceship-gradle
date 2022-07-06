@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+@file:Suppress("RemoveRedundantQualifierName")
+
 package it.scoppelletti.spaceship.gradle.model
 
 import javax.inject.Inject
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 
 /**
  * License.
@@ -29,16 +32,19 @@ import org.gradle.api.provider.Property
  * @property name Name.
  * @property url  URL.
  */
-public abstract class LicenseModel @Inject constructor(objects: ObjectFactory) {
+public abstract class LicenseModel @Inject constructor(
+    objects: ObjectFactory,
+    providers: ProviderFactory
+) {
 
     public val name: Property<String> =
         objects.property(String::class.java).apply {
-            convention("The Apache License, Version 2.0")
+            convention(providers.gradleProperty(LicenseModel.PROP_NAME))
         }
 
     public val url: Property<String> =
         objects.property(String::class.java).apply {
-            convention("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            convention(providers.gradleProperty(LicenseModel.PROP_URL))
         }
 
     override fun toString(): String =
@@ -46,4 +52,19 @@ public abstract class LicenseModel @Inject constructor(objects: ObjectFactory) {
             .append("name", name.orNull)
             .append("url", url.orNull)
             .build()
+
+    public companion object {
+
+        /**
+         * Property containing the name of the license.
+         */
+        public const val PROP_NAME: String =
+            "it.scoppelletti.spaceship.license.name"
+
+        /**
+         * Property containing the URL of the license text.
+         */
+        public const val PROP_URL: String =
+            "it.scoppelletti.spaceship.license.url"
+    }
 }

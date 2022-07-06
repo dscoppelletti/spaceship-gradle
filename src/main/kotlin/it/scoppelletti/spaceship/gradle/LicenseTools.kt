@@ -96,7 +96,7 @@ public class LicenseTools private constructor(
         public const val LICENSE_SOURCE: String = "LICENSE"
 
         /**
-         * Name of the fake class that implements the task for copying the
+         * Name of the fictious class that implements the task for copying the
          * license file.
          */
         public const val LICENSE_TASK: String =

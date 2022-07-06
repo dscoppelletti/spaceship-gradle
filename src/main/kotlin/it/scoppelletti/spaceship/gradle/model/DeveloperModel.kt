@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+@file:Suppress("RemoveRedundantQualifierName")
+
 package it.scoppelletti.spaceship.gradle.model
 
 import javax.inject.Inject
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 
 /**
  * Developer.
@@ -31,22 +34,23 @@ import org.gradle.api.provider.Property
  * @property url   Website.
  */
 public abstract class DeveloperModel @Inject constructor(
-    objects: ObjectFactory
+    objects: ObjectFactory,
+    providers: ProviderFactory
 ) {
 
     public val name: Property<String> =
         objects.property(String::class.java).apply {
-            convention("Dario Scoppelletti")
+            convention(providers.gradleProperty(DeveloperModel.PROP_NAME))
         }
 
     public val email: Property<String> =
         objects.property(String::class.java).apply {
-            convention("dario@scoppelletti.it")
+            convention(providers.gradleProperty(DeveloperModel.PROP_EMAIL))
         }
 
     public val url: Property<String> =
         objects.property(String::class.java).apply {
-            convention("http://www.scoppelletti.it")
+            convention(providers.gradleProperty(DeveloperModel.PROP_WEBSITE))
         }
 
     override fun toString(): String =
@@ -55,4 +59,25 @@ public abstract class DeveloperModel @Inject constructor(
             .append("email", email.orNull)
             .append("url", url.orNull)
             .build()
+
+    public companion object {
+
+        /**
+         * Property containing the name of the developer.
+         */
+        public const val PROP_NAME: String =
+            "it.scoppelletti.spaceship.developer.name"
+
+        /**
+         * Property containing the email of the developer.
+         */
+        public const val PROP_EMAIL: String =
+            "it.scoppelletti.spaceship.developer.email"
+
+        /**
+         * Property containing the URL of the developer website.
+         */
+        public const val PROP_WEBSITE: String =
+            "it.scoppelletti.spaceship.developer.website"
+    }
 }
