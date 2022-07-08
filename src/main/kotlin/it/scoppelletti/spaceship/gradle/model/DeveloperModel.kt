@@ -50,7 +50,7 @@ public abstract class DeveloperModel @Inject constructor(
 
     public val url: Property<String> =
         objects.property(String::class.java).apply {
-            convention(providers.gradleProperty(DeveloperModel.PROP_WEBSITE))
+            convention(providers.gradleProperty(DeveloperModel.PROP_URL))
         }
 
     override fun toString(): String =
@@ -77,7 +77,7 @@ public abstract class DeveloperModel @Inject constructor(
         /**
          * Property containing the URL of the developer website.
          */
-        public const val PROP_WEBSITE: String =
-            "it.scoppelletti.spaceship.developer.website"
+        public const val PROP_URL: String =
+            "it.scoppelletti.spaceship.developer.url"
     }
 }

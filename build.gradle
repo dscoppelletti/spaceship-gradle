@@ -19,6 +19,7 @@ plugins {
     id 'maven-publish'
     id 'com.github.ben-manes.versions' version '0.42.0'
     id 'com.google.devtools.ksp' version '1.6.21-1.0.6'
+    id 'org.jetbrains.dokka' version '1.6.21'
 }
 
 group = 'it.scoppelletti.spaceship'
@@ -28,6 +29,14 @@ archivesBaseName = 'spaceship-gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
+
+// Simulate Spaceship extension
+def developerName = 'Dario Scoppelletti'
+def developerEmail = 'dario@scoppelletti.it'
+def developerUrl = 'http://www.scoppelletti.it'
+def copyrightYear = '2019-2022'
+def licenseName = 'The Apache License, Version 2.0'
+def licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
 gradlePlugin {
     plugins {
@@ -92,11 +101,96 @@ test {
     useJUnitPlatform()
 }
 
+dokkaHtml {
+    configure {
+        outputDirectory.set(project.file('build/dokka'))
+        moduleName.set(project.name)
+        moduleVersion.set(project.version)
+        suppressObviousFunctions.set(false)
+        suppressInheritedMembers.set(true)
+        offlineMode.set(true)
+        dokkaSourceSets {
+            named('main') {
+                documentedVisibilities.set([
+                        DokkaConfiguration.Visibility.PUBLIC,
+                        DokkaConfiguration.Visibility.PROTECTED])
+                skipDeprecated.set(false)
+                reportUndocumented.set(false)
+                skipEmptyPackages.set(true)
+                platform.set(Platform.jvm)
+                noJdkLink.set(true)
+                noAndroidSdkLink.set(true)
+                suppressGeneratedFiles.set(true)
+                includes.from('README.md')
+            }
+            pluginsMapConfiguration.set([
+                    "org.jetbrains.dokka.base.DokkaBase": """{
+"footerMessage" : "Copyright(C) ${copyrightYear} <a href='${developerUrl}'>${developerName}</a>",
+"customStyleSheets" : [ "${project.file('etc/logo-styles.css')}" ]
+}"""
+                    ])
+        }
+    }
+}
+
+tasks.register('copyLicense', Copy) {
+    description = 'Copies the license file'
+    group = BasePlugin.BUILD_GROUP
+    from project.rootDir
+    into project.file('build/metainf')
+    include 'LICENSE'
+    rename('LICENSE', 'LICENSE.txt')
+}
+
+tasks.register('generateNotice') {
+    dependsOn('copyLicense')
+    description = 'Creates the notice file'
+    group = BasePlugin.BUILD_GROUP
+    doLast {
+        def file = project.file('build/metainf/NOTICE.txt')
+        file.write "${project.description}\n"
+        file.append "Copyright(C) ${copyrightYear} ${developerName}, ${developerUrl}\n"
+    }
+}
+
+jar {
+    dependsOn('generateNotice')
+    metaInf { spec -> spec.from(project.file('build/metainf')) }
+}
+
+tasks.register('generateSourcesPackage', Jar) {
+    dependsOn('generateNotice')
+    description = 'Generates the sources package'
+    group = PublishingPlugin.PUBLISH_TASK_GROUP
+    from(project.file('src/main'))
+    metaInf { spec -> spec.from(project.file('build/metainf')) }
+    destinationDirectory.set(project.file('build/libs'))
+    archiveBaseName.set('src')
+    archiveVersion.set(project.version.toString())
+    archiveClassifier.set('sources')
+    archiveExtension.set('jar')
+}
+
+tasks.register("generateJavadocPackage", Jar) {
+    dependsOn('dokkaHtml', 'generateNotice')
+    description = 'Generates the Javadoc package'
+    group = PublishingPlugin.PUBLISH_TASK_GROUP
+    from(project.file('build/dokka'))
+    metaInf { spec -> spec.from(project.file('build/metainf')) }
+    destinationDirectory.set(project.file('build/libs'))
+    archiveBaseName.set('javadoc')
+    archiveVersion.set(project.version.toString())
+    archiveClassifier.set('javadoc')
+    archiveExtension.set('jar')
+}
+
 publishing {
     publications {
         // publishLibraryPublicationToDevRepository
         library(MavenPublication) {
             from components.java
+            artifact generateSourcesPackage
+            artifact generateJavadocPackage
 
             artifactId = archivesBaseName
 
@@ -104,18 +198,18 @@ publishing {
                 name = rootProject.name
                 description = project.description
                 url = 'http://github.com/dscoppelletti/spaceship-gradle'
-                inceptionYear = '2019-2022'
+                inceptionYear = copyrightYear
                 developers {
                     developer {
-                        name = 'Dario Scoppelletti'
-                        email = 'dario@scoppelletti.it'
-                        url = 'http://www.scoppelletti.it'
+                        name = developerName
+                        email = developerEmail
+                        url = developerUrl
                     }
                 }
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = licenseName
+                        url = licenseUrl
                     }
                 }
                 scm {
