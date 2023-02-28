@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle
 
 import groovy.lang.MissingPropertyException
@@ -171,20 +169,20 @@ public class PublishTools private constructor(
      */
     public fun createPublishingRepo() {
         val url = try {
-            project.property(PublishTools.PROP_REPOURL) as String?
+            project.property(PROP_REPOURL) as String?
         } catch (ex: MissingPropertyException) {
             project.logger.info(
-                "Property ${PublishTools.PROP_REPOURL} not set.")
+                "Property $PROP_REPOURL not set.")
             return
         }
 
-        project.logger.info("Property ${PublishTools.PROP_REPOURL}=$url")
+        project.logger.info("Property $PROP_REPOURL=$url")
         if (url.isNullOrBlank()) {
             return
         }
 
         publishExt.repositories.maven { repo ->
-            repo.name = PublishTools.REPO_NAME
+            repo.name = REPO_NAME
             repo.url = project.uri(url)
         }
     }

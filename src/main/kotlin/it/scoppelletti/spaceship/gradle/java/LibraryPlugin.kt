@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle.java
 
 import it.scoppelletti.spaceship.gradle.DokkaTools
@@ -94,7 +92,7 @@ public abstract class LibraryPlugin: Plugin<Project> {
 
         val publTools = PublishTools.create(project) ?: return
 
-        val publ = publTools.createPublication(LibraryPlugin.PUBL_NAME,
+        val publ = publTools.createPublication(PUBL_NAME,
             COMPONENT_JAVA).apply {
                 pom.packaging = Jar.DEFAULT_EXTENSION
         }

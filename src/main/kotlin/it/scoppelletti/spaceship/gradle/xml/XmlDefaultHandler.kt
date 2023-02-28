@@ -38,7 +38,7 @@ public abstract class XmlDefaultHandler(
     private val entityResolver: EntityResolver? = null
 ): DefaultHandler() {
 
-    @Suppress("WeakerAccess", "RedundantGetter", "RedundantSetter")
+    @Suppress("MemberVisibilityCanBePrivate", "RedundantGetter", "RedundantSetter")
     public var locator: Locator? = null
         get() = field
         private set(value) {
@@ -69,7 +69,7 @@ public abstract class XmlDefaultHandler(
      * @throws        org.xml.sax.SAXException
      */
     override fun characters(ch: CharArray?, start: Int, length: Int) {
-        contentBuffer?.append(ch, start, length)
+        contentBuffer?.appendRange(ch!!, start, start + length)
     }
 
     /**

@@ -1,11 +1,21 @@
+import org.jetbrains.dokka.DokkaConfiguration
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 buildscript {
-    ext.kotlin_version = '1.6.21'
+    ext.dokka_version = '1.7.20'
+    ext.kotlin_version = '1.8.0'
     ext.KOTLIN_BOM = "org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"
-    ext.SPACESHIP_BOM = 'it.scoppelletti.spaceship:spaceship-bom:1.0.0'
+    ext.SPACESHIP_BOM = 'it.scoppelletti.spaceship:spaceship-bom:1.1.0'
 
     repositories {
         gradlePluginPortal()
         mavenCentral()
+
+        if (project.hasProperty('it.scoppelletti.spaceship.repository.url')) {
+            maven {
+                url project.property('it.scoppelletti.spaceship.repository.url')
+            }
+        }
     }
     dependencies {
         classpath platform(KOTLIN_BOM)
@@ -14,21 +24,18 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.0'
     id 'java-gradle-plugin'
     id 'maven-publish'
-    id 'com.github.ben-manes.versions' version '0.42.0'
-    id 'com.google.devtools.ksp' version '1.6.21-1.0.6'
-    id 'org.jetbrains.dokka' version '1.6.21'
+    id 'com.github.ben-manes.versions' version '0.46.0'
+    id 'com.google.devtools.ksp' version '1.8.0-1.0.9'
+    id 'org.jetbrains.dokka' version '1.7.20'
 }
 
 group = 'it.scoppelletti.spaceship'
-version = '1.0.0'
+version = '1.1.0'
 description 'Spaceship Gradle Plugins'
 archivesBaseName = 'spaceship-gradle'
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
 // Simulate Spaceship extension
 def developerName = 'Dario Scoppelletti'
@@ -48,19 +55,8 @@ gradlePlugin {
 }
 
 kotlin {
-    explicitApi = 'strict'
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
+    explicitApi()
+    jvmToolchain(11)
 }
 
 repositories {
@@ -86,7 +82,7 @@ dependencies {
     bom platform(SPACESHIP_BOM)
     api gradleApi()
     api 'org.freemarker:freemarker'
-    api 'org.jetbrains.dokka:dokka-gradle-plugin'
+    api 'org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}'
     implementation 'io.github.microutils:kotlin-logging'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.slf4j:slf4j-api'
@@ -123,13 +119,13 @@ dokkaHtml {
                 suppressGeneratedFiles.set(true)
                 includes.from('README.md')
             }
-            pluginsMapConfiguration.set([
-                    "org.jetbrains.dokka.base.DokkaBase": """{
+        }
+        pluginsMapConfiguration.set([
+                "org.jetbrains.dokka.base.DokkaBase": """{
 "footerMessage" : "Copyright(C) ${copyrightYear} <a href='${developerUrl}'>${developerName}</a>",
 "customStyleSheets" : [ "${project.file('etc/logo-styles.css')}" ]
 }"""
-                    ])
-        }
+        ])
     }
 }
 
@@ -162,7 +158,7 @@ tasks.register('generateSourcesPackage', Jar) {
     dependsOn('generateNotice')
     description = 'Generates the sources package'
     group = PublishingPlugin.PUBLISH_TASK_GROUP
-    from(project.file('src/main'))
+    from(project.file('src/main/kotlin'))
     metaInf { spec -> spec.from(project.file('build/metainf')) }
     destinationDirectory.set(project.file('build/libs'))
     archiveBaseName.set('src')

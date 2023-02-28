@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle.tasks
 
 import freemarker.template.TemplateException

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle.xml
 
 import it.scoppelletti.spaceship.gradle.reflect.getResourceAsStream
@@ -64,14 +62,13 @@ public class SchemaEntityResolver(
             return null
         }
 
-        val uriPrefix = SchemaEntityResolver.URI_PREFIX + path
-        if (!systemId.startsWith(uriPrefix) ||
-            !systemId.endsWith(SchemaEntityResolver.SCHEMA_EXT)) {
+        val uriPrefix = URI_PREFIX + path
+        if (!systemId.startsWith(uriPrefix) || !systemId.endsWith(SCHEMA_EXT)) {
             return null
         }
 
         val value = systemId.substring(uriPrefix.length, systemId.length -
-                SchemaEntityResolver.SCHEMA_EXT.length)
+                SCHEMA_EXT.length)
 
         val version = try {
             Integer.parseInt(value)
@@ -82,8 +79,7 @@ public class SchemaEntityResolver(
             return null
         }
 
-        return SchemaEntityResolver.RESOURCE_PREFIX + path +
-                version.toString() + SchemaEntityResolver.SCHEMA_EXT
+        return RESOURCE_PREFIX + path + version.toString() + SCHEMA_EXT
     }
 
     public companion object {

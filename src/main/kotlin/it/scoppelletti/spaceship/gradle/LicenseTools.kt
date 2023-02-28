@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle
 
 import it.scoppelletti.spaceship.gradle.tasks.NoticeTask
@@ -52,8 +50,8 @@ public class LicenseTools private constructor(
             task.group = BasePlugin.BUILD_GROUP
             task.into(outputDir)
                 .from(project.rootDir)
-                .include(LicenseTools.LICENSE_SOURCE)
-                .rename(LicenseTools.LICENSE_SOURCE, LicenseTools.LICENSE_NAME)
+                .include(LICENSE_SOURCE)
+                .rename(LICENSE_SOURCE, LICENSE_NAME)
 
             // http://docs.gradle.org/7.2/userguide/validation_problems.html
             //  #implementation_unknown

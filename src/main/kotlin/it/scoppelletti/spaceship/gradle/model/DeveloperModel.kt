@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle.model
 
 import javax.inject.Inject
@@ -40,17 +38,17 @@ public abstract class DeveloperModel @Inject constructor(
 
     public val name: Property<String> =
         objects.property(String::class.java).apply {
-            convention(providers.gradleProperty(DeveloperModel.PROP_NAME))
+            convention(providers.gradleProperty(PROP_NAME))
         }
 
     public val email: Property<String> =
         objects.property(String::class.java).apply {
-            convention(providers.gradleProperty(DeveloperModel.PROP_EMAIL))
+            convention(providers.gradleProperty(PROP_EMAIL))
         }
 
     public val url: Property<String> =
         objects.property(String::class.java).apply {
-            convention(providers.gradleProperty(DeveloperModel.PROP_URL))
+            convention(providers.gradleProperty(PROP_URL))
         }
 
     override fun toString(): String =

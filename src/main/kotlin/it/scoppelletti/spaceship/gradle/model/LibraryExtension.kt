@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle.model
 
 import javax.inject.Inject
@@ -49,13 +47,12 @@ public abstract class LibraryExtension @Inject constructor(
 
     public val logoUrl: Property<String> =
         objects.property(String::class.java).apply {
-            convention(providers.gradleProperty(LibraryExtension.PROP_LOGOURL))
+            convention(providers.gradleProperty(PROP_LOGOURL))
         }
 
     @get:Nested
     public abstract val developer: DeveloperModel
 
-    @Suppress("WeakerAccess")
     public fun developer(action: Action<DeveloperModel>) {
         action.execute(developer)
     }
@@ -63,7 +60,6 @@ public abstract class LibraryExtension @Inject constructor(
     @get:Nested
     public abstract val license: LicenseModel
 
-    @Suppress("WeakerAccess")
     public fun license(action: Action<LicenseModel>) {
         action.execute(license)
     }

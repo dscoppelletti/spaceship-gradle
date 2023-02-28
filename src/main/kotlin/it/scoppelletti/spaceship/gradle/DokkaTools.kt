@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RemoveRedundantQualifierName")
-
 package it.scoppelletti.spaceship.gradle
 
 import com.squareup.moshi.JsonAdapter
@@ -60,11 +58,10 @@ public class DokkaTools private constructor(
      * @return        The new task.
      */
     public fun createDokkaTask(config: DokkaConfigModel): DokkaTask? =
-        (project.tasks.findByName(DokkaTools.TASK_NAME) as?
-                DokkaTask)?.apply {
+        (project.tasks.findByName(TASK_NAME) as? DokkaTask)?.apply {
             configureTask(this, config)
         } ?: run {
-            project.logger.info("Task ${DokkaTools.TASK_NAME} not found.")
+            project.logger.info("Task $TASK_NAME not found.")
             null
         }
 
