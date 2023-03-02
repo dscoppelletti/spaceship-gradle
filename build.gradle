@@ -41,7 +41,7 @@ archivesBaseName = 'spaceship-gradle'
 def developerName = 'Dario Scoppelletti'
 def developerEmail = 'dario@scoppelletti.it'
 def developerUrl = 'http://www.scoppelletti.it'
-def copyrightYear = '2019-2022'
+def copyrightYear = '2019-2023'
 def licenseName = 'The Apache License, Version 2.0'
 def licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
@@ -82,7 +82,7 @@ dependencies {
     bom platform(SPACESHIP_BOM)
     api gradleApi()
     api 'org.freemarker:freemarker'
-    api 'org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}'
+    api "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
     implementation 'io.github.microutils:kotlin-logging'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.slf4j:slf4j-api'

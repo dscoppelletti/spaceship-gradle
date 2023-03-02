@@ -35,3 +35,6 @@ Provides `Task` implementations.
 
 Provides XML APIs.
 
+# Package it.scoppelletti.spaceship.gradle.zip
+
+Zip utilities.
