@@ -27,7 +27,8 @@ import java.nio.charset.StandardCharsets
 /**
  * Freemarker extensions.
  *
- * @since 1.0.0
+ * @property config Configuration
+ * @since           1.0.0
  */
 public object FreemarkerExt {
 
