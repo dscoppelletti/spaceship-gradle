@@ -71,7 +71,7 @@ public fun Project.zip(archive: File, folder: File): WorkResult {
                         }
 
                         zip.closeEntry()
-                        logger.debug("Zip file $file.")
+                        logger.debug("Zip file {}.", file)
                     }
 
                     return FileVisitResult.CONTINUE

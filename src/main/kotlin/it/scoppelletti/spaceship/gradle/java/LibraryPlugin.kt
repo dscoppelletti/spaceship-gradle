@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2022 Dario Scoppelletti, <http://www.scoppelletti.it/>.
+ * Copyright (C) 2019-2023 Dario Scoppelletti, <http://www.scoppelletti.it/>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,11 @@ public abstract class LibraryPlugin: Plugin<Project> {
                 pom.packaging = Jar.DEFAULT_EXTENSION
         }
 
+        val kspTask = project.tasks.findByName(KSP_TASK_NAME)
+        if (kspTask == null) {
+            project.logger.info("Task $KSP_TASK_NAME not found.")
+        }
+
         val javaTools = JavaTools.create(project)
         javaTools.buildSourceDirs()?.let { sources ->
             publ.artifact(
@@ -104,6 +109,9 @@ public abstract class LibraryPlugin: Plugin<Project> {
                     metainfDir).apply {
                     configure { task ->
                         task.dependsOn(metainfTask)
+                        kspTask?.let {
+                            task.dependsOn(it)
+                        }
                     }
                 }
             )
@@ -155,5 +163,7 @@ public abstract class LibraryPlugin: Plugin<Project> {
          * Name of the Maven publication.
          */
         public const val PUBL_NAME: String = "library"
+
+        private const val KSP_TASK_NAME = "kspKotlin"
     }
 }

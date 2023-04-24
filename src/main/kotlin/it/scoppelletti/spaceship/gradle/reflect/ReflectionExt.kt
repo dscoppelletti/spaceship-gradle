@@ -17,7 +17,6 @@
 package it.scoppelletti.spaceship.gradle.reflect
 
 import java.io.InputStream
-import java.security.AccessController
 import java.security.PrivilegedAction
 import mu.KotlinLogging
 
@@ -48,7 +47,7 @@ private class StreamFinder(
      * @return Resource. If the resource is not found, returns `null`.
      */
     fun findResource(): InputStream? =
-        AccessController.doPrivileged(this) ?: run {
+        this.run() ?: run {
             logger.debug { "Resource $resName not found." }
             return null
         }

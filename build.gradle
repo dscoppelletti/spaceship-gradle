@@ -39,7 +39,7 @@ gradlePlugin {
 
 kotlin {
     explicitApi()
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 configurations {
@@ -155,7 +155,6 @@ tasks.register("generateJavadocPackage", Jar) {
 
 publishing {
     publications {
-        // publishLibraryPublicationToDevRepository
         library(MavenPublication) {
             from components.java
             artifact generateSourcesPackage
